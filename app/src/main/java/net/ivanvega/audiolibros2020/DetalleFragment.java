@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class DetalleFragment extends Fragment {
+    public static String ARG_ID_LIBRO = "id_libro";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +62,31 @@ public class DetalleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detalle, container, false);
+
+       View vista = inflater.inflate(R.layout.fragment_detalle, container, false);
+
+        Bundle args = getArguments();
+
+        if (args != null) {
+            int position = args.getInt(ARG_ID_LIBRO);
+            ponInfoLibro(position, vista);
+        } else {
+            ponInfoLibro(0, vista);
+        }
+
+
+
+        return vista;
     }
+
+    private void ponInfoLibro(int id, View vista) {
+        Libro libro =
+                Libro.ejemploLibros().elementAt(id);
+        ((TextView) vista.findViewById(R.id.titulo)).setText(libro.titulo);
+        ((TextView) vista.findViewById(R.id.autor)).setText(libro.autor);
+        ((ImageView) vista.findViewById(R.id.portada)).setImageResource(libro.recursoImagen);
+
+
+    }
+
 }

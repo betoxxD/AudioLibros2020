@@ -24,10 +24,5 @@ public class MainActivity extends AppCompatActivity {
                             selectorFragment).commit();
         }
 
-
-
-
-
-
     }
 }
