@@ -1,7 +1,9 @@
 package net.ivanvega.audiolibros2020;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +30,8 @@ public class SelectorFragment extends Fragment {
     private String mParam2;
     private RecyclerView recycler;
     private GridLayoutManager layoutManager;
+
+    MainActivity mainActivity;
 
     public SelectorFragment() {
         // Required empty public constructor
@@ -48,6 +53,15 @@ public class SelectorFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        mainActivity = (MainActivity) context;
+
+
     }
 
     @Override
@@ -75,6 +89,18 @@ public class SelectorFragment extends Fragment {
 
         AdaptadorLibros adaptadorLibros =
                 new AdaptadorLibros(getActivity() , Libro.ejemploLibros());
+
+            adaptadorLibros.setOnclickListener(
+                    vl -> {
+                        Toast.makeText(getActivity(),
+                        "Elemento seleccionado: "
+                                + recycler.getChildAdapterPosition(vl) ,
+                                Toast.LENGTH_LONG).show();
+
+                        mainActivity.mostrarDetalle(recycler.getChildAdapterPosition(vl));
+
+                    }
+            );
 
         recycler.setAdapter(adaptadorLibros);
 

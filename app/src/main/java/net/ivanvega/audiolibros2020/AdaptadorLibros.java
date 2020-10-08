@@ -18,6 +18,18 @@ public class AdaptadorLibros extends  RecyclerView.Adapter<AdaptadorLibros.ViewH
     private  Context contexto;
     private  LayoutInflater inflador;
 
+    public void setOnLongClickListener(View.OnLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
+    }
+
+    public void setOnclickListener(View.OnClickListener onclickListener) {
+        this.onclickListener = onclickListener;
+    }
+
+    private View.OnLongClickListener onLongClickListener;
+    private View.OnClickListener onclickListener;
+
+
     public AdaptadorLibros(Context contexto,
                            Vector<Libro> vectorLibros) {
         inflador = (LayoutInflater) contexto.getSystemService
@@ -32,6 +44,10 @@ public class AdaptadorLibros extends  RecyclerView.Adapter<AdaptadorLibros.ViewH
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = inflador.inflate(R.layout.elemento_selector, null);
+
+        v.setOnClickListener(this.onclickListener);
+        v.setOnLongClickListener(this.onLongClickListener);
+
         return new ViewHolder(v);
 
     }

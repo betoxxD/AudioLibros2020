@@ -79,6 +79,10 @@ public class DetalleFragment extends Fragment {
         return vista;
     }
 
+    public void ponInfoLibro(int id) {
+        ponInfoLibro(id, getView());
+    }
+
     private void ponInfoLibro(int id, View vista) {
         Libro libro =
                 Libro.ejemploLibros().elementAt(id);
