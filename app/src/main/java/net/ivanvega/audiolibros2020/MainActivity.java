@@ -21,7 +21,9 @@ public class MainActivity extends AppCompatActivity {
         SelectorFragment selectorFragment
                 = new SelectorFragment();
 
-        if ( findViewById(R.id.contenedor_pequeno) != null        ){
+        if ( findViewById(R.id.contenedor_pequeno) != null    &&
+            getSupportFragmentManager().findFragmentById(R.id.contenedor_pequeno) == null
+        ){
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.contenedor_pequeno,
                             selectorFragment).commit();

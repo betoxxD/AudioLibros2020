@@ -1,9 +1,12 @@
 package net.ivanvega.audiolibros2020;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +35,9 @@ public class SelectorFragment extends Fragment {
     private GridLayoutManager layoutManager;
 
     MainActivity mainActivity;
+    Context context;
+
+    String[] menuContextual = new String[]{"Compartir","Agregar","Eliminar"};
 
     public SelectorFragment() {
         // Required empty public constructor
@@ -58,8 +64,13 @@ public class SelectorFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        this.context= context;
+        if (context instanceof MainActivity) {
+            mainActivity =
+                    (MainActivity) context;
+        }
 
-        mainActivity = (MainActivity) context;
+
 
 
     }
@@ -90,17 +101,81 @@ public class SelectorFragment extends Fragment {
         AdaptadorLibros adaptadorLibros =
                 new AdaptadorLibros(getActivity() , Libro.ejemploLibros());
 
-            adaptadorLibros.setOnclickListener(
-                    vl -> {
-                        Toast.makeText(getActivity(),
-                        "Elemento seleccionado: "
-                                + recycler.getChildAdapterPosition(vl) ,
-                                Toast.LENGTH_LONG).show();
+        adaptadorLibros.setOnclickListener(
+                vl -> {
+                    Toast.makeText(getActivity(),
+                    "Elemento seleccionado: "
+                            + recycler.getChildAdapterPosition(vl) ,
+                            Toast.LENGTH_LONG).show();
 
-                        mainActivity.mostrarDetalle(recycler.getChildAdapterPosition(vl));
+                    mainActivity.mostrarDetalle(recycler.getChildAdapterPosition(vl));
 
-                    }
-            );
+                }
+        );
+
+        adaptadorLibros.setOnLongClickListener(
+                volc -> {
+
+                   final int itemSelectd = recycler.getChildAdapterPosition(volc);    ;
+
+                    AlertDialog.Builder cuadroDialogo =
+                            new AlertDialog.Builder(context);
+
+                    cuadroDialogo.setTitle("Seleccione la opción");
+//                    cuadroDialogo.setMessage("Informacion del mensaje");
+//                    cuadroDialogo.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            Toast.makeText(context, "Boton Ok Presionado!", Toast.LENGTH_LONG).show();
+//                        }
+//                    });
+
+                    cuadroDialogo.setItems(menuContextual,
+                            (dialogInterface, i) ->
+                            {
+                                Toast.makeText(context, "Se presiono el elemtn: "
+                                        + i
+                                        , Toast.LENGTH_LONG).show();
+
+                                switch (i) {
+                                    case 0 :
+                                        Intent intent =
+                                                new Intent(Intent.ACTION_SEND);
+
+                                        intent.setType("text/plain"
+                                        );
+                                        intent.putExtra(Intent.EXTRA_SUBJECT,
+                                                Libro.ejemploLibros().get(itemSelectd).titulo);
+                                        intent.putExtra(Intent.EXTRA_TEXT,
+                                                Libro.ejemploLibros().get(itemSelectd).urlAudio);
+                                        startActivity(intent);
+                                        //codigo para compartir
+                                        break;
+
+                                    case 1 :
+                                        Libro.ejemploLibros().add(Libro.ejemploLibros().get(itemSelectd));
+                                        adaptadorLibros.notifyDataSetChanged();
+                                        //codigo para compartir
+                                        break;
+                                    case 2 :
+                                        Libro.ejemploLibros().remove(itemSelectd);
+                                        adaptadorLibros.notifyDataSetChanged();
+                                        //codigo para compartir
+                                        break;
+                                }
+
+
+                            }
+
+                    );
+
+                    cuadroDialogo.create().show();
+
+                    return false;
+                }
+        );
+
+
 
         recycler.setAdapter(adaptadorLibros);
 

@@ -1,21 +1,32 @@
 package net.ivanvega.audiolibros2020;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link DetalleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetalleFragment extends Fragment {
+public class DetalleFragment extends Fragment
+                            implements View.OnTouchListener,
+                            MediaPlayer.OnPreparedListener,
+        MediaController.MediaPlayerControl
+{
     public static String ARG_ID_LIBRO = "id_libro";
 
     // TODO: Rename parameter arguments, choose names that match
@@ -26,6 +37,10 @@ public class DetalleFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    MediaPlayer mediaPlayer;
+    MediaController mediaController;
+
 
     public DetalleFragment() {
         // Required empty public constructor
@@ -90,7 +105,109 @@ public class DetalleFragment extends Fragment {
         ((TextView) vista.findViewById(R.id.autor)).setText(libro.autor);
         ((ImageView) vista.findViewById(R.id.portada)).setImageResource(libro.recursoImagen);
 
+        vista.setOnTouchListener(this);
+
+        if (mediaPlayer != null){
+            mediaPlayer.release();
+        }
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnPreparedListener(this);
+        mediaController = new MediaController(getActivity());
+        Uri audio = Uri.parse(libro.urlAudio);
+        try {
+            mediaPlayer.setDataSource(getActivity(), audio);
+            mediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            Log.e("Audiolibros", "ERROR: No se puede reproducir "+audio,e);
+        }
+
+
+
+
 
     }
 
+    @Override
+    public void onStop() {
+        mediaController.hide();
+        try {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        } catch (Exception e) {
+            Log.d("Audiolibros", "Error en mediaPlayer.stop()");
+        }
+        super.onStop();
+
+    }
+
+        @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        mediaController.show();
+        return false;
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mediaPlayer) {
+        Log.d("Audiolibros", "Entramos en onPrepared de MediaPlayer");
+        mediaPlayer.start();
+        mediaController.setMediaPlayer(this);
+        mediaController.setAnchorView(getView());
+        mediaController.setEnabled(true);
+        mediaController.show();
+    }
+
+    @Override
+    public void start() {
+        mediaPlayer.start();
+    }
+
+    @Override
+    public void pause() {
+        mediaPlayer.pause();
+    }
+
+    @Override
+    public int getDuration() {
+        return mediaPlayer.getDuration();
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public void seekTo(int i) {
+        mediaPlayer.seekTo(i);
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return mediaPlayer.isPlaying();
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return 0;
+    }
+
+    @Override
+    public boolean canPause() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekBackward() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekForward() {
+        return true;
+    }
+
+    @Override
+    public int getAudioSessionId() {
+        return mediaPlayer.getAudioSessionId();
+    }
 }
