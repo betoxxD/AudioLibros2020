@@ -1,5 +1,6 @@
 package net.ivanvega.audiolibros2020;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
+
+import net.ivanvega.audiolibros2020.services.MiIntentService;
+import net.ivanvega.audiolibros2020.services.MiServicio;
 
 import java.io.IOException;
 
@@ -40,7 +44,7 @@ public class DetalleFragment extends Fragment
 
     MediaPlayer mediaPlayer;
     MediaController mediaController;
-
+    Intent iSer;
 
     public DetalleFragment() {
         // Required empty public constructor
@@ -99,6 +103,15 @@ public class DetalleFragment extends Fragment
     }
 
     private void ponInfoLibro(int id, View vista) {
+
+        iSer = new Intent(getContext(), MiServicio.class);
+        getActivity().startService(iSer);
+
+        Intent miIS = new Intent(getContext(), MiIntentService.class);
+        getActivity().startService(miIS);
+
+
+
         Libro libro =
                 Libro.ejemploLibros().elementAt(id);
         ((TextView) vista.findViewById(R.id.titulo)).setText(libro.titulo);
@@ -129,6 +142,8 @@ public class DetalleFragment extends Fragment
 
     @Override
     public void onStop() {
+        super.onStop();
+
         mediaController.hide();
         try {
             mediaPlayer.stop();
@@ -136,7 +151,6 @@ public class DetalleFragment extends Fragment
         } catch (Exception e) {
             Log.d("Audiolibros", "Error en mediaPlayer.stop()");
         }
-        super.onStop();
 
     }
 
