@@ -26,7 +26,7 @@ public class MiIntentService extends IntentService {
 
         @Override
         protected Boolean doInBackground(Integer... integers) {
-             Log.d("MIIS", "Se recibieron " + integers.length +" parametros" );
+             Log.d("MIIS", "Se recibieron en el subproceso " + integers.length +" parametros" );
 
              for (int i=0; i<integers.length ; i++){
 
@@ -36,7 +36,7 @@ public class MiIntentService extends IntentService {
                      e.printStackTrace();
                  }
 
-                 Log.d("MIIS", "Valor del parametro "+ (i+1) + "" + integers[i]  );
+                 Log.d("MIIS", "Valor del parametro "+ (i+1) + " = " + integers[i]  );
                  publishProgress(i, i);
              }
 
@@ -46,8 +46,8 @@ public class MiIntentService extends IntentService {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            Log.d("MIIS", "Progreso " + values[0] );
-        }
+            Log.d("MIIS", "Progreso en subproceso " + values[0] );
+    }
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
@@ -66,12 +66,12 @@ public class MiIntentService extends IntentService {
 
             //ejecucion de un subproceso ya que la tarea es pesada
 
-            new MiTareaAsincrona().execute(1,4,5,2,6);
+            new MiTareaAsincrona().execute(1,4,5,2,6, 12,99,11, 100, 89);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        Log.d ("MIIS", "Tarea prolongada realizadA");
+        Log.d ("MIIS", "Tarea prolongada realizadA en Intent Service");
     }
 }

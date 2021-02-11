@@ -104,6 +104,8 @@ public class DetalleFragment extends Fragment
 
     private void ponInfoLibro(int id, View vista) {
 
+        //servicio iniciado
+        //servicio de primer plano
         iSer = new Intent(getContext(), MiServicio.class);
         getActivity().startService(iSer);
 
