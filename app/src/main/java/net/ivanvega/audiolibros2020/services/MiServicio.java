@@ -33,10 +33,21 @@ public class MiServicio extends Service {
      */
     public class MiServicioBinder extends Binder {
 
-        MiServicioBinder getService() {
+        public MiServicio getService() {
             // Return this instance of LocalService so clients can call public methods
-            return MiServicioBinder.this;
+            return MiServicio.this;
         }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    /** method for clients */
+    public int getRandomNumber() {
+        return mGenerator.nextInt(100);
     }
 
     @Override
@@ -135,7 +146,7 @@ public class MiServicio extends Service {
     private void foregroundService() {
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.putExtra("_rep", "Servicio Primer plano");
+        notificationIntent.putExtra("rep", "Servicio Primer plano");
 
 
         PendingIntent pendingIntent =
@@ -151,15 +162,11 @@ public class MiServicio extends Service {
                         .build();
 
             // Notification ID cannot be 0.
-         startForeground(1000, notification);
+             startForeground(1000, notification);
 
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+
 
     @Override
     public void onDestroy() {

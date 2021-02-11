@@ -1,12 +1,17 @@
 package net.ivanvega.audiolibros2020;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,6 +36,7 @@ public class DetalleFragment extends Fragment
                             MediaPlayer.OnPreparedListener,
         MediaController.MediaPlayerControl
 {
+    MiServicio  miServicio;
     public static String ARG_ID_LIBRO = "id_libro";
 
     // TODO: Rename parameter arguments, choose names that match
@@ -102,12 +108,35 @@ public class DetalleFragment extends Fragment
         ponInfoLibro(id, getView());
     }
 
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            MiServicio.MiServicioBinder miServicioBinder =
+                    (MiServicio.MiServicioBinder) iBinder ;
+             miServicio =
+                    miServicioBinder.getService();
+
+            Log.d("MSE", "GFrameno enlazado al seervicio " + componentName);
+
+             int randf =  miServicio.getRandomNumber();
+            Log.d("MSE", "Peticion  al servicio " + randf);
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    };
+
     private void ponInfoLibro(int id, View vista) {
 
         //servicio iniciado
         //servicio de primer plano
         iSer = new Intent(getContext(), MiServicio.class);
         getActivity().startService(iSer);
+
+        getActivity().bindService(iSer, serviceConnection, Context.BIND_AUTO_CREATE);
 
         Intent miIS = new Intent(getContext(), MiIntentService.class);
         getActivity().startService(miIS);
@@ -180,6 +209,8 @@ public class DetalleFragment extends Fragment
     @Override
     public void pause() {
         mediaPlayer.pause();
+        int randf =  miServicio.getRandomNumber();
+        Log.d("MSE", "Peticion  al servicio " + randf);
     }
 
     @Override
@@ -225,5 +256,10 @@ public class DetalleFragment extends Fragment
     @Override
     public int getAudioSessionId() {
         return mediaPlayer.getAudioSessionId();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
