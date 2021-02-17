@@ -31,7 +31,7 @@ public class MiIntentService extends IntentService {
              for (int i=0; i<integers.length ; i++){
 
                  try {
-                     Thread.sleep(5000);
+                     Thread.sleep(5);
                  } catch (InterruptedException e) {
                      e.printStackTrace();
                  }
@@ -62,7 +62,7 @@ public class MiIntentService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
 
         try {
-            Thread.sleep(15000);
+            Thread.sleep(1);
 
             //ejecucion de un subproceso ya que la tarea es pesada
 

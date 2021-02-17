@@ -130,10 +130,16 @@ public class DetalleFragment extends Fragment
     };
 
     private void ponInfoLibro(int id, View vista) {
-
         //servicio iniciado
         //servicio de primer plano
+        Libro libro =
+                Libro.ejemploLibros().elementAt(id);
+        ((TextView) vista.findViewById(R.id.titulo)).setText(libro.titulo);
+        ((TextView) vista.findViewById(R.id.autor)).setText(libro.autor);
+        ((ImageView) vista.findViewById(R.id.portada)).setImageResource(libro.recursoImagen);
+        Uri audio = Uri.parse(libro.urlAudio);
         iSer = new Intent(getContext(), MiServicio.class);
+        iSer.putExtra("audio",audio.toString());
         getActivity().startService(iSer);
 
         getActivity().bindService(iSer, serviceConnection, Context.BIND_AUTO_CREATE);
@@ -141,13 +147,6 @@ public class DetalleFragment extends Fragment
         Intent miIS = new Intent(getContext(), MiIntentService.class);
         getActivity().startService(miIS);
 
-
-
-        Libro libro =
-                Libro.ejemploLibros().elementAt(id);
-        ((TextView) vista.findViewById(R.id.titulo)).setText(libro.titulo);
-        ((TextView) vista.findViewById(R.id.autor)).setText(libro.autor);
-        ((ImageView) vista.findViewById(R.id.portada)).setImageResource(libro.recursoImagen);
 
         vista.setOnTouchListener(this);
 
@@ -157,7 +156,6 @@ public class DetalleFragment extends Fragment
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnPreparedListener(this);
         mediaController = new MediaController(getActivity());
-        Uri audio = Uri.parse(libro.urlAudio);
         try {
             mediaPlayer.setDataSource(getActivity(), audio);
             mediaPlayer.prepareAsync();

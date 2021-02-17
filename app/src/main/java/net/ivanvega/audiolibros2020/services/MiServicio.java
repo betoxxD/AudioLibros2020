@@ -89,52 +89,7 @@ public class MiServicio extends Service {
         }
 
         Log.d("MSAL", "Iniciando la tarea pesada ");
-        try {
-            Thread.sleep(5000);
 
-                AsyncTask<Integer,
-                        Integer, Boolean> task = new AsyncTask<Integer, Integer, Boolean>() {
-                @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
-                    //Inicializacion de objetos
-                }
-
-                @Override
-                protected Boolean doInBackground(Integer... integers) {
-
-                    //código de tarea pesada
-                    //consultar un API web o un recurso
-
-                    for(int i=0; i < integers.length; i++){
-                        Log.d("MSAL", "Iniciando la tarea pesada " + integers[i]);
-                        onProgressUpdate(i,i);
-                    }
-
-                    return integers.length > 0;
-                }
-
-                @Override
-                protected void onProgressUpdate(Integer... values) {
-                    super.onProgressUpdate(values);
-                    Log.d("MSAL", "Iniciando la tarea pesada " + values[0]);
-
-                }
-
-                @Override
-                protected void onPostExecute(Boolean aBoolean) {
-                    super.onPostExecute(aBoolean);
-                    if(aBoolean){
-                        Log.d("MSAL", "Tarea exhautiva finalizada");
-                    }
-                }
-            };
-
-            task.execute(1,2,3,4);
-            
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         //stopSelf();
         Log.d("MSAL", "Tarea pesada finalizada");
 
