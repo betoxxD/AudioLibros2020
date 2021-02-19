@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        detalleFragment.stopService();
+        try {
+            detalleFragment.stopService();
+        }catch (Exception ex){
+
+        }
     }
 }
