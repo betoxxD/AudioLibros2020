@@ -108,7 +108,7 @@ public class SelectorFragment extends Fragment {
                             + recycler.getChildAdapterPosition(vl) ,
                             Toast.LENGTH_LONG).show();
 
-                    mainActivity.mostrarDetalle(recycler.getChildAdapterPosition(vl));
+                    mainActivity.mostrarDetalle(recycler.getChildAdapterPosition(vl),false);
 
                 }
         );

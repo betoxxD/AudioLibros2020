@@ -6,6 +6,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
@@ -22,6 +24,9 @@ import java.util.Random;
 
 public class MiServicio extends Service {
 
+    private int id;
+    Uri uri;
+    public static MediaPlayer mediaPlayer;
     // Binder given to clients
     private final IBinder binder = new MiServicioBinder();
     // Random number generator
@@ -53,7 +58,6 @@ public class MiServicio extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         Log.d("MSAL", "servicio creado");
 
     }
@@ -75,21 +79,29 @@ public class MiServicio extends Service {
         }
     }
 
+    public MediaPlayer getMediaPlayer(){
+        return mediaPlayer;
+    }
+    String title;
+    String autor;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //Este método se manda llamar cuando invocas el servicio con startService()
         //tarea pesado debe ir en un subproceso y desencadenarse asquí
-
+        id = intent.getIntExtra("id",-1);
+        title = intent.getStringExtra("title");
+        autor = intent.getStringExtra("autor");
         //startForeground(10001, new Notication.builder()   );
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel();
             foregroundService();
         }
+        uri = Uri.parse(intent.getStringExtra("uri"));
+        mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
 
         Log.d("MSAL", "Iniciando la tarea pesada ");
-
+        mediaPlayer.start();
         //stopSelf();
         Log.d("MSAL", "Tarea pesada finalizada");
 
@@ -101,6 +113,7 @@ public class MiServicio extends Service {
     private void foregroundService() {
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.putExtra("id", id);
         notificationIntent.putExtra("rep", "Servicio Primer plano");
 
 
@@ -109,8 +122,8 @@ public class MiServicio extends Service {
 
         Notification notification =
                 new Notification.Builder(this, CHANNEL_ID)
-                        .setContentTitle("Titulo")
-                        .setContentText("Servicio en ejecucion")
+                        .setContentTitle(title)
+                        .setContentText(autor)
                         .setSmallIcon(R.drawable.ic_launcher_background)
                         .setContentIntent(pendingIntent)
                         .setTicker("Se inicio el servicio")
